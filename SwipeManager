@@ -1,0 +1,100 @@
+
+// drag drop this script to your player and call(ISwipe) interface with her impliment
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum SwipeDirection
+{
+    Up, Right, Down, Left
+}
+public interface ISwipe
+{
+    void OnSwipe(SwipeDirection direction);
+}
+public class SwipeManager : MonoBehaviour
+{
+    /// <summary>
+    /// The Swiping Distance
+    /// </summary>
+    public float distance = 20;
+    private SwipeDirection swipeType;
+
+    ///-------------Create 3 veriables--------------
+    // the new position
+    Touch nt;
+    // the old positin
+    Touch ot;
+    // this boolean to run- 
+    //our code once in update func
+    bool hasChoised = false;
+
+    void Update()
+    {
+        // check if we touched our screen
+        if (Input.touchCount > 0)
+        {
+            // geting the firs touch named "t"
+            Touch t = Input.GetTouch(0);
+
+            // check the phase of the touch
+            if (t.phase == TouchPhase.Began)
+            {
+                //record our 'old position' to "ot"
+                ot = t;
+                hasChoised = false;
+            }
+            // check if the finger has moved
+            if (t.phase == TouchPhase.Moved)
+            {
+                // record our 'new position' to "t"
+                nt = t;
+                // make the code run only if the user did not choised
+                if (!hasChoised)
+                {
+                    //checking if our old position of y axis is less then new position by 20px(by defualt)
+                    if (ot.position.y + 20 < nt.position.y)
+                    {
+                        //update interace func
+                        ISwipe s = GetComponent<ISwipe>();
+                        s.OnSwipe(SwipeDirection.Up);
+                        // set the boolean to true beceuse the user choised
+                        hasChoised = true;
+
+                    }
+                    //checking if our old position of y axis is greater then new position by 20px(by defualt)
+                    else if (ot.position.y > nt.position.y + 20)
+                    {
+                        //update interace func
+                        ISwipe s = GetComponent<ISwipe>();
+                        s.OnSwipe(SwipeDirection.Down);
+                        // set the boolean to true beceuse the user choised
+                        hasChoised = true;
+                    }
+                    //checking if our old position of x axis is less then new position by 20px(by defualt)
+                    else if (ot.position.x + 20 < nt.position.x)
+                    {
+                        //update interace func
+                        ISwipe s = GetComponent<ISwipe>();
+                        s.OnSwipe(SwipeDirection.Right);
+                        // set the boolean to true beceuse the user choised
+                        hasChoised = true;
+                    }
+                    //checking if our old position of x axis is greater then new position by 20px(by defualt)
+                    else if (ot.position.x > nt.position.x + 20)
+                    {
+                        //update interace func
+                        ISwipe s = GetComponent<ISwipe>();
+                        s.OnSwipe(SwipeDirection.Left);
+                        // set the boolean to true beceuse the user choised
+                        hasChoised = true;
+                    }
+                }
+
+            }
+        }
+    }
+
+
+
+}
